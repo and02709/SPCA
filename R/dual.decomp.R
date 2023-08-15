@@ -19,14 +19,14 @@ dual.decomp <- function(X, L, npc, n, p){
   Md <- eigen(M)
   if(npc==1){
     Sigma_Meval <- sqrt(Md$values[1])
-    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(Md$vectors[1,], Psi))
+    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(as.matrix(Md$vectors)[,1], Psi))
     #U <- t(t(Psi)%*%Md$vectors%*%t(solve(Sigma_Meval)))
     return(list(vectors=t(U), values=Md$values[1]))
   }
   else{
     Sigma_Meval <- diag(sqrt(Md$values[1:npc]))
     #Ut <- t(t(Psi)%*%Uvectors%*%t(solve(Siggy)))
-    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(Md$vectors[1:npc,], Psi))
+    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(as.matrix(Md$vectors)[,1:npc], Psi))
     return(list(vectors=t(U), values=Md$values[1:npc]))
   }
 }
