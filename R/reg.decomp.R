@@ -12,6 +12,6 @@
 reg.decomp <- function(X, L, npc, n, p){
   H <- diag(x=1, nrow=n) - 1/n*rep(1,n)%*%t(rep(1,n))
   M <- Rfast::Crossprod(X, Rfast::mat.mult(H, Rfast::mat.mult(L, Rfast::mat.mult(H, X))))
-  Md <- eigen(M)
-  return(list(vectors=as.matrix(Md$vectors[,1:npc]), values=Md$values[1:npc]))
+  Md <- RSpectra::eigs_sym(M, k=npc, which = "LM")
+  return(list(vectors=Md$vectors, values=Md$values))
 }

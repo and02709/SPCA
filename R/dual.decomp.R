@@ -16,17 +16,17 @@ dual.decomp <- function(X, L, npc, n, p){
   #   This matrix is nxn instead of pxp
   M <- Rfast::Tcrossprod(Psi, Psi)
   # Decomposition of Dual supervised form
-  Md <- eigen(M)
+  Md <- RSpectra::eigs_sym(M, k=npc, which = "LM")
   if(npc==1){
-    Sigma_Meval <- sqrt(Md$values[1])
-    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(as.matrix(Md$vectors[,1]), Psi))
+    Sigma_Meval <- sqrt(Md$values)
+    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(Md$vectors, Psi))
     #U <- t(t(Psi)%*%Md$vectors%*%t(solve(Sigma_Meval)))
-    return(list(vectors=t(U), values=Md$values[1]))
+    return(list(vectors=t(U), values=Md$values))
   }
   else{
-    Sigma_Meval <- diag(sqrt(Md$values[1:npc]))
+    Sigma_Meval <- diag(sqrt(Md$values))
     #Ut <- t(t(Psi)%*%Uvectors%*%t(solve(Siggy)))
-    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(as.matrix(Md$vectors[,1:npc]), Psi))
-    return(list(vectors=t(U), values=Md$values[1:npc]))
+    U <- Rfast::mat.mult(solve(Sigma_Meval),Rfast::Crossprod(Md$vectors, Psi))
+    return(list(vectors=t(U), values=Md$values))
   }
 }
